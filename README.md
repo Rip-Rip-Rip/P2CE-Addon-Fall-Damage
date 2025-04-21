@@ -17,6 +17,8 @@ In this addon, fall damage is enabled and health regeneration is disabled. On th
 
 This mod has some settings you can adjust:
 
+`SetHudSize(val)` // Sets the size of the onscreen health display. Has 4 sizes. Set value persists across maps. Takes integers 1, 2, 3 or 4 as a parameter, corresponding to different size levels.
+
 `SetMaxPlayerHealth(val)` // Sets the player's maximum health and heals the player to full health. Set value persists across maps. Takes an integer > 0 as a parameter.
 
 `DoHealthRegeneration(val)` // Enables/Disables player health regeneration. Set value persists across maps. Takes a boolean value ('true'/'false') as a parameter.
@@ -30,13 +32,13 @@ In order to change these settings, open the console whilst inside a map and run 
 
 DEVELOPER:
 
-ResetScript() - Used to reset the script back to default, only run this if something breaks.
+`ResetScript()` // Used to reset the script back to default, only run this if something breaks.
 
 -----
 
 Credits:
 
-sirenstorm - Partially creating the panorama health display.
+sirenstorm - Partially creating the panorama health display.  
 Beckeroo - Playtesting + feedback.
 
 -----
