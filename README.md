@@ -36,7 +36,7 @@ ResetScript() - Used to reset the script back to default, only run this if somet
 
 Credits:
 
-sirenstorm - Partially creating the panorama health display.
+sirenstorm - Partially creating the panorama health display.<br>
 Beckeroo - Playtesting + feedback.
 
 -----
