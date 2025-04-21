@@ -17,11 +17,11 @@ In this addon, fall damage is enabled and health regeneration is disabled. On th
 
 This mod has some settings you can adjust:
 
-SetMaxPlayerHealth(val) - Sets the player's maximum health and heals the player to full health. Set value persists across maps. Takes an integer > 0 as a parameter.
+`SetMaxPlayerHealth(val)` // Sets the player's maximum health and heals the player to full health. Set value persists across maps. Takes an integer > 0 as a parameter.
 
-DoHealthRegeneration(val) - Enables/Disables player health regeneration. Set value persists across maps. Takes a boolean value ('true'/'false') as a parameter.
+`DoHealthRegeneration(val)` // Enables/Disables player health regeneration. Set value persists across maps. Takes a boolean value ('true'/'false') as a parameter.
 
-DoHealthPersistence(val) - Enables/Disables player health persistence (whether the player's health in one level is transfered into future levels). Takes a boolean value ('true'/'false') as a parameter.
+`DoHealthPersistence(val)` // Enables/Disables player health persistence (whether the player's health in one level is transfered into future levels). Takes a boolean value ('true'/'false') as a parameter.
 
 In order to change these settings, open the console whilst inside a map and run the command: script [function]
 (e.g. `script SetMaxPlayerHealth(150)`).
