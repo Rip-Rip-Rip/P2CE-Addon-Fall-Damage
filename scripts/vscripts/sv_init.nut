@@ -1,15 +1,16 @@
 // script created by Rip Rip Rip (https://www.youtube.com/@Rip-Rip-Rip)
-// version 1.00
+// version 1.01
 
 ::health <- null
 ::regenenabled <- null
 ::healthpersistence <- null
+::hudsize <- null
 function Init()
 {
     ::Dev <- Dev()
     Dev.msg("Initialising script...")
 
-    ::SCOPE <- Storage.CreateScope("RipRipRip_FallDamage_V1")
+    ::SCOPE <- Storage.CreateScope("RipRipRip_FallDamage_V1_01")
 
     local interval = Entities.CreateByClassname("logic_timer")
     interval.__KeyValueFromString("targetname", "fd_interval")
@@ -33,13 +34,17 @@ function Init_PlayerSetup()
         SCOPE.SetInt("player_health", player.GetMaxHealth())
         SCOPE.SetInt("player_regenenabled", 0)
         SCOPE.SetInt("player_health_persistenceenabled", 0)
+        SCOPE.SetInt("hud_size", 2)
+
         regenenabled = 0
         healthpersistence = 0
+        hudsize = 2
     } else {
         Dev.msg("Grabbing previous values...")
         player.SetMaxHealth(SCOPE.GetInt("player_maxhealth"))
         regenenabled = SCOPE.GetInt("player_regenenabled")
         healthpersistence = SCOPE.GetInt("player_health_persistenceenabled")
+        hudsize = SCOPE.GetInt("hud_size")
         if(healthpersistence == 1) player.SetHealth(SCOPE.GetInt("player_health"))
         else SCOPE.SetInt("player_health", player.GetMaxHealth())
     }
@@ -54,10 +59,11 @@ function Init_PlayerSetup()
 }
 function Init_LoadFromSave()
 {
-    ::SCOPE <- Storage.CreateScope("RipRipRip_FallDamage_V1")
+    ::SCOPE <- Storage.CreateScope("RipRipRip_FallDamage_V1_01")
     SCOPE.SetInt("player_health", health)
     regenenabled = SCOPE.GetInt("player_regenenabled")
     healthpersistence = SCOPE.GetInt("player_health_persistenceenabled")
+    hudsize = SCOPE.GetInt("hud_size")
     playerHUDUpdate()
 }
 function playerDetectHealthChange()
@@ -95,9 +101,10 @@ function playerDetectHealthChange()
 }
 function playerHUDUpdate()
 {
-    // use these to get around event-definition.js not being reloaded when "panorama_reload" is ran
-    SendToPanorama("Drawer_NavigateToTab", health.tostring())
-    SendToPanorama("Drawer_ExtendAndNavigateToTab", player.GetMaxHealth().tostring())
+    // use these to get around event-definition.ts not being reloaded when "panorama_reload" is ran
+    SendToPanorama("Drawer_NavigateToTab", health.tostring())   // health
+    SendToPanorama("Drawer_ExtendAndNavigateToTab", player.GetMaxHealth().tostring())   // max health
+    SendToPanorama("Drawer_UpdateLobbyButton", hudsize.tostring())    // hud size
 }
 
 ::setup_hasfired <- false
@@ -115,6 +122,23 @@ function Interval()
     if(GetDeveloperLevel() > 0) Dev.DisplayOnscreenInfo()
 }
 
+function SetHudSize(val)
+{
+    if(typeof(val) != "integer") {
+        Dev.msg_error("Invalid input type! Only integer values are accepted.")
+        return
+    } else if(val <= 0 || val > 4) {
+        Dev.msg_error("Invalid input size! Size must be 1, 2, 3 or 4!")
+        return
+    }
+
+    hudsize = val
+
+    SCOPE.SetInt("hud_size", hudsize)
+    playerHUDUpdate()
+
+    Dev.msg("Set HUD size to " + val + "!")
+}
 function SetMaxPlayerHealth(val)
 {
     if(typeof(val) != "integer") {
@@ -199,6 +223,8 @@ class Dev{
         DebugDrawScreenText(0.01, 0.64, "MAX HEALTH (SCOPED): " + SCOPE.GetInt("player_maxhealth"), 255, 150, 255, 255, 0.05)
         DebugDrawScreenText(0.01, 0.655, "IS HEALTH PERSISTENCE ENABLED: " + healthpersistence, 255, 150, 255, 255, 0.05)
         DebugDrawScreenText(0.01, 0.67, "IS HEALTH PERSISTENCE ENABLED (SCOPED): " + SCOPE.GetInt("player_health_persistenceenabled"), 255, 150, 255, 255, 0.05)
+        DebugDrawScreenText(0.01, 0.685, "HUD SIZE: " + hudsize, 255, 150, 255, 255, 0.05)
+        DebugDrawScreenText(0.01, 0.7, "HUD SIZE (SCOPED): " + SCOPE.GetInt("hud_size"), 255, 150, 255, 255, 0.05)
     }
 }
 

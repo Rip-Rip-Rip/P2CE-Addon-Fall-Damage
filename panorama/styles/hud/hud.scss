@@ -82,7 +82,6 @@ Hud,
 {
 	color: $bright-color;
 	font-family: $font-header;
-	font-size: 60px;
 	font-weight: 'bold';
 	text-shadow: 0px 0px 50px 1.0 #000000;
 	margin-bottom: 5%;
@@ -107,4 +106,21 @@ Hud,
 .Hidden
 {
 	visibility: collapse;
+}
+
+.Size1
+{
+	font-size: 35px;
+}
+.Size2
+{
+	font-size: 45px;
+}
+.Size3
+{
+	font-size: 55px;
+}
+.Size4
+{
+	font-size: 65px;
 }

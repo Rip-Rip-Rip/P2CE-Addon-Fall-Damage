@@ -31,7 +31,7 @@
 		<!-- Anchored to the bottom-left corner of the screen, laid out from top to bottom -->
 		<Panel id="HudLowerLeft" hittest="false" hittestchildren="true">
 			<Panel id="HudHealthValuesPanel" class="HudHealthValuesPanel">
-				<Label id="HudHealthCharge" text="HEALTH: null / null"/>
+				<Label id="HudHealthCharge" text="HEALTH: null / null" class="Size1"/>
 			</Panel>
 		</Panel>
 
