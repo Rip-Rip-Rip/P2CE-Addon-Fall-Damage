@@ -41,6 +41,10 @@ Beckeroo - Playtesting + feedback.
 
 -----
 
-If you experience any issues, please either leave a comment on this addon and/or drop me a DM on Discord! (Handle: @ripriprip)
+If you experience any issues, please either:
+- Make an issue on this repository.
+- Create a pull request if you're experienced with VScripting.
+- Leave a comment on the workshop page linked above.
+- Drop me a DM on Discord. Handle: @ripriprip
 
 Enjoy! <3
