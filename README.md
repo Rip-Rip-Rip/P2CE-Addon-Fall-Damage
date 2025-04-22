@@ -11,28 +11,30 @@ NOTE: This addon has a custom panorama health display. When on the main menu aft
 Have you ever wondered what Portal 2 would be like if Chell didn't have her Long Fall Boots™?
 Well, wonder no more! :D
 
-In this addon, fall damage is enabled and health regeneration is disabled. On the load of every map, Chell regains her health (unless health persistence is enabled).
+In this addon, fall damage is enabled and health regeneration is disabled (unless enabled).
+
+You can choose to have health persistence disabled (default) or enabled. With health persistence enabled, Chell's health at the end of a map is carried through to the next map.
+
+Medkits also spawn throughout each level (usually around other test elements). These heal 20 health each by default.
 
 -----
 
 This mod has some settings you can adjust:
 
-`SetHudSize(val)` // Sets the size of the onscreen health display. Has 4 sizes. Set value persists across maps. Takes integers 1, 2, 3 or 4 as a parameter, corresponding to different size levels.
+`SetHudSize(val)` // Sets the size of the onscreen health display. Has 4 sizes. Set value persists across maps. Takes integers 1, 2, 3 or 4 as a parameter, corresponding to different size levels. (Default value = 2)
 
-`SetMaxPlayerHealth(val)` // Sets the player's maximum health and heals the player to full health. Set value persists across maps. Takes an integer > 0 as a parameter.
+`SetMaxPlayerHealth(val)` // Sets the player's maximum health and heals the player to full health. Set value persists across maps. Takes an integer > 0 as a parameter. (Default value = 100)
 
-`DoHealthRegeneration(val)` // Enables/Disables player health regeneration. Set value persists across maps. Takes a boolean value ('true'/'false') as a parameter.
+`SetMedkitHealAmount(val)` // Sets the amount of health a medkit provides to a player. Set value persists across maps. Takes an integer > 0 as a parameter. (Default value = 20)
 
-`DoHealthPersistence(val)` // Enables/Disables player health persistence (whether the player's health in one level is transfered into future levels). Takes a boolean value ('true'/'false') as a parameter.
+`DoHealthRegeneration(val)` // Enables/Disables player health regeneration. Set value persists across maps. Takes a boolean value ('true'/'false') as a parameter. (Default value = false)
 
-In order to change these settings, open the console whilst inside a map and run the command: script [function]
-(e.g. `script SetMaxPlayerHealth(150)`).
-
----
-
-DEVELOPER:
+`DoHealthPersistence(val)` // Enables/Disables player health persistence (whether the player's health in one level is transfered into future levels). Takes a boolean value ('true'/'false') as a parameter. (Default value = false)
 
 `ResetScript()` // Used to reset the script back to default, only run this if something breaks.
+
+In order to change these settings, open the console whilst inside a map and run the command: `script [function]`
+(e.g. `script SetMaxPlayerHealth(150)`).
 
 -----
 
