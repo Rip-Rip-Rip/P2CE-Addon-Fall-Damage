@@ -1,0 +1,8 @@
+"HealthKit.Touch"	// required to prevent fiddlesticks from medkits
+{
+	"channel"	"CHAN_ITEM"
+	"volume"	"1"
+	"soundlevel"  "SNDLVL_75dB"
+
+	"wave"	"items/smallmedkit1.wav"
+}
