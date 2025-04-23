@@ -1,5 +1,5 @@
 // script created by Rip Rip Rip (https://www.youtube.com/@Rip-Rip-Rip)
-// version 1.10
+// version 1.11
 
 ::health <- null
 function Precache()
@@ -14,11 +14,9 @@ function Init()
     ::Dev <- Dev()
     Dev.msg("Initialising script...")
 
-    ::SCOPE <- Storage.CreateScope("RipRipRip_FallDamage_V1_10")
+    ::SCOPE <- Storage.CreateScope("RipRipRip_FallDamage_V1_11")
 
-    local interval = Entities.CreateByClassname("logic_timer")
-    interval.__KeyValueFromString("targetname", "fd_interval")
-    interval.__KeyValueFromFloat("RefireTime", 0.01)
+    local interval = CreateEntityByName("logic_timer", {targetname = "fd_interval", RefireTime = 0.01})
     interval.ConnectOutput("OnTimer", "Interval")
     EntFire("fd_interval", "Enable")
 
@@ -41,12 +39,14 @@ function Init_PlayerSetup()
         SCOPE.SetInt("hud_size", 2)
         SCOPE.SetInt("medkit_heal", 20)
         SCOPE.SetInt("medkit_enabled", 1)
+        SCOPE.SetInt("falldamage_enabled", 1)
 
         ::regenenabled <- 0
         ::healthpersistence <- 0
         ::hudsize <- 2
         ::medkit_heal <- 20
         ::medkit_enabled <- 1
+        ::falldamage_enabled <- 1
     } else {
         Dev.msg("Grabbing previous values...")
         player.SetMaxHealth(SCOPE.GetInt("player_maxhealth"))
@@ -55,6 +55,8 @@ function Init_PlayerSetup()
         ::hudsize <- SCOPE.GetInt("hud_size")
         ::medkit_heal <- SCOPE.GetInt("medkit_heal")
         ::medkit_enabled <- SCOPE.GetInt("medkit_enabled")
+        ::falldamage_enabled <- SCOPE.GetInt("falldamage_enabled")
+
         if(healthpersistence == 1) player.SetHealth(SCOPE.GetInt("player_health"))
         else SCOPE.SetInt("player_health", player.GetMaxHealth())
     }
@@ -62,9 +64,11 @@ function Init_PlayerSetup()
     health = player.GetMaxHealth()
     playerHUDUpdate()
 
-    local proxy = Entities.CreateByClassname("logic_playerproxy")   // required to remove boots from player
-    proxy.__KeyValueFromString("targetname", "fd_proxy")
-    EntFire("fd_proxy", "RemoveBoots")
+    if(falldamage_enabled == 1) {
+        local proxy = CreateEntityByName("logic_playerproxy", {targetname = "fd_proxy"})
+        EntFire("fd_proxy", "RemoveBoots")
+        EntFire("fd_proxy", "Kill", "", FrameTime())
+    }
 
     if(medkit_enabled == 1) medkitSpawn()
 
@@ -79,11 +83,12 @@ function Init_MapSpecific()
             trigger.__KeyValueFromString("OnStartTouch", "fd_proxy,RemoveBoots,,1")
             trigger.__KeyValueFromString("OnStartTouch", "fd_proxy,Kill,,1.01")
         }
+        return
     } else EntFire("fd_proxy", "Kill", "", FrameTime())
 }
 function Init_LoadFromSave()
 {
-    ::SCOPE <- Storage.CreateScope("RipRipRip_FallDamage_V1_10")
+    ::SCOPE <- Storage.CreateScope("RipRipRip_FallDamage_V1_11")
     SCOPE.SetInt("player_health", health)
     regenenabled = SCOPE.GetInt("player_regenenabled")
     healthpersistence = SCOPE.GetInt("player_health_persistenceenabled")
@@ -108,12 +113,7 @@ function playerDetectHealthChange()
             SCOPE.SetInt("player_health", health)
             player.SetHealth(player.GetMaxHealth())
             if(health <= 0) {
-                local hurt = Entities.CreateByClassname("point_hurt")
-                hurt.__KeyValueFromString("targetname", "fd_hurt")
-                hurt.__KeyValueFromString("DamageTarget", "!player")
-                hurt.__KeyValueFromInt("Damage", 99999)
-                hurt.__KeyValueFromInt("DamageType", 32)
-
+                local hurt = CreateEntityByName("point_hurt", {targetname = "fd_hurt", DamageTarget = "!player", Damage = 99999, DamageType = 32})
                 EntFire("fd_hurt", "TurnOn")
                 EntFire("fd_hurt", "Hurt", "", FrameTime())
                 EntFire("fd_hurt", "TurnOff", "", FrameTime() * 2)
@@ -158,6 +158,7 @@ function medkitSpawn()
         "npc_portal_turret_floor"
     ]
     local count = 0
+    if(GetMapName() == "sp_a2_laser_intro") count = 1   // hack to prevent a medkit spawning which blocks the catcher from rising
     foreach(val in point_ents) {
         for(local point = null; point = Entities.FindByClassname(point, val);) {
             count++
@@ -198,7 +199,7 @@ function Interval()
     }
 }
 
-// script commands
+// script commands - use `script [function]` in the console to run
 function SetHudSize(val)
 {
     if(typeof(val) != "integer") {
@@ -307,6 +308,28 @@ function DoHealthPersistence(val)
     healthpersistence = val
     SCOPE.SetInt("player_health_persistenceenabled", healthpersistence)
 }
+function DoFallDamage(val)
+{
+    if(typeof(val) != "bool") {
+        Dev.msg_error("Invalid input type! Only boolean values ('true'/'false') are accepted.")
+        return
+    }
+    if(val == true) {
+        Dev.msg("Enabled fall damage!")
+        local proxy = CreateEntityByName("logic_playerproxy", {targetname = "fd_proxy"})
+        EntFire("fd_proxy", "RemoveBoots")
+        EntFire("fd_proxy", "Kill", "", FrameTime())
+        val = 1
+    } else if(val == false) {
+        Dev.msg("Disabled fall damage!")
+        local proxy = CreateEntityByName("logic_playerproxy", {targetname = "fd_proxy"})
+        EntFire("fd_proxy", "GiveBoots")
+        EntFire("fd_proxy", "Kill", "", FrameTime())
+        val = 0
+    } 
+    falldamage_enabled = val
+    SCOPE.SetInt("falldamage_enabled", falldamage_enabled)
+}
 function ResetScript()
 {
     SCOPE.ClearAll()
@@ -341,9 +364,8 @@ class Dev{
         DebugDrawScreenText(0.01, 0.73, "MEDKIT HEAL AMOUNT (SCOPED): " + SCOPE.GetInt("medkit_heal"), 255, 150, 255, 255, 0.05)
         DebugDrawScreenText(0.01, 0.745, "IS MEDKIT SPAWNING ENABLED: " + medkit_enabled, 255, 150, 255, 255, 0.05)
         DebugDrawScreenText(0.01, 0.76, "IS MEDKIT SPAWNING ENABLED (SCOPED): " + SCOPE.GetInt("medkit_enabled"), 255, 150, 255, 255, 0.05)
-    }
-    function DrawBox(pos, colour, time) {
-        DebugDrawBox(pos, Vector(-2, -2, -2), Vector(2, 2, 2), colour.x, colour.y, colour.z, 75, time)
+        DebugDrawScreenText(0.01, 0.775, "IS FALL DAMAGE ENABLED: " + falldamage_enabled, 255, 150, 255, 255, 0.05)
+        DebugDrawScreenText(0.01, 0.79, "IS FALL DAMAGE ENABLED (SCOPED): " + SCOPE.GetInt("falldamage_enabled"), 255, 150, 255, 255, 0.05)
     }
 }
 
