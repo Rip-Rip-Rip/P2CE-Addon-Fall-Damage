@@ -31,6 +31,8 @@ This mod has some settings you can adjust:
 
 `DoHealthPersistence(val)` // Enables/Disables player health persistence (whether the player's health in one level is transfered into future levels). Takes a boolean value ('true'/'false') as a parameter. (Default value = false)
 
+`DoFallDamage(val)` // Enables/Disables fall damage. Intended for use in cases where the player just wants the other script's capabilities and not the fall damage. Takes a boolean value ('true'/'false') as a parameter. (Default value = true).
+
 `ResetScript()` // Used to reset the script back to default, only run this if something breaks.
 
 In order to change these settings, open the console whilst inside a map and run the command: `script [function]`
